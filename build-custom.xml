@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- You may freely edit this file. See commented blocks below for -->
+<!-- some examples of how to customize the build. -->
+<!-- (If you delete it and reopen the project it will be recreated.) -->
+<!-- By default, only the Clean and Build commands use this build script. -->
+<!-- Commands such as Run, Debug, and Test only use this build script if -->
+<!-- the Compile on Save feature is turned off for the project. -->
+<!-- You can turn off the Compile on Save (or Deploy on Save) setting -->
+<!-- in the project's Project Properties dialog box.-->
+<project name="Betting" default="dist" basedir=".">
+    <description>Builds, tests, and runs the project Betting.</description>
+    <import file="nbproject/build-impl.xml"/>
+    
+    <taskdef resource="net/sf/antcontrib/antlib.xml">
+        <classpath>
+            <pathelement location="${basedir}/tools/ant-contrib-1.0b3-bin/ant-contrib-1.0b3.jar"/>
+        </classpath>
+    </taskdef>
+    
+    <property file="${basedir}/nbproject/project.properties"/>
+    <property file="${basedir}/version.properties"/>
+    <property file="${basedir}/build.properties"/>
+    
+    <!--  
+        Extract jar name from the dist.jar property
+    -->
+    <propertyregex property="application.jar.name" input="${dist.jar}" regexp=".*/(.*)" select="\1"/>
+    
+    <target name="dist" depends="jar-only, zip-jre, zip-libs, create-clean-db">
+        <!-- not needed for now... maybe never
+        <copy file="betting.ini" flatten="true" todir="${dist.dir}"/>
+        -->
+        
+        <!-- 
+            Copy startup/setup scripts to ${dist.dir}
+        -->
+        <echo message="Copying startup scripts..."/>
+        <copy file="${batch.files.dir}/${script.start}" flatten="true" todir="${dist.dir}"/>
+        <replace file="${dist.dir}/${script.start}" token="@JAVA_HOME@" value="${jre.dir}"/>
+        <copy file="${batch.files.dir}/${script.start.no.console}" flatten="true" todir="${dist.dir}"/>
+        <replace file="${dist.dir}/${script.start.no.console}" token="@JAVA_HOME@" value="${jre.dir}"/>
+        
+        <!--
+            Copy startup/setup scripts to ${dist.dir}
+        -->
+        <echo message="Copying config dir..."/>
+        <copy todir="${dist.dir}">
+            <fileset dir="${basedir}" includes="${config.dir.name}/**"/>
+        </copy>
+        
+        <!-- 
+            Build setup zip
+        -->
+        <echo message="Building setup archive..."/>
+        <zip basedir="${dist.dir}" destfile="${setup.zip.file}" level="0">
+            <include name="${jre.zip}"/>
+            <include name="${lib.zip}"/>
+            <include name="${config.dir.name}/**"/>
+            <include name="${db.zip}"/>
+            <include name="${application.jar.name}"/>
+            <include name="${script.start.no.console}"/>
+            <include name="${script.start}"/>
+        </zip>
+        
+        <!-- 
+            Copy unzip.exe and setup.bat to ${dist.dir}
+        -->
+        <echo message="Copying ${unzip.exe} and setup script..."/>
+        <copy todir="${dist.dir}" file="${unzip.exe.file}"/>
+        <copy file="${batch.files.dir}/${script.setup}" todir="${dist.dir}"/>
+        <replace file="${dist.dir}/${script.setup}" token="@installation.image.zip.name@" value="${installation.image.zip.name}"/>
+        <replace file="${dist.dir}/${script.setup}" token="@application.dir@" value="${application.name}"/>
+        <replace file="${dist.dir}/${script.setup}" token="@setup.zip@" value="${setup.zip}"/>
+        <replace file="${dist.dir}/${script.setup}" token="@db.zip@" value="${db.zip}"/>
+        <replace file="${dist.dir}/${script.setup}" token="@jre.zip@" value="${jre.zip}"/>
+        <replace file="${dist.dir}/${script.setup}" token="@lib.zip@" value="${lib.zip}"/>
+        <replace file="${dist.dir}/${script.setup}" token="@script.start@" value="${script.start}"/>
+        <replace file="${dist.dir}/${script.setup}" token="@script.start.no.console@" value="${script.start.no.console}"/>
+                
+        <!-- 
+            Build distribution zip
+        -->
+        <echo message="Creating distribution zip ..."/>
+        <zip basedir="${dist.dir}" destfile="${installation.image.zip.file}" level="0">
+            <include name="${setup.zip}"/>
+            <include name="${unzip.exe}"/>
+            <include name="${script.setup}"/>
+        </zip>        
+    </target>
+    
+    <target name="jar-only" depends="clean, jar"/>
+    
+    <target name="jar-and-db-update" depends="jar-only, db-update-script">
+        <zip basedir="${dist.dir}" destfile="${dist.dir}/bin_and_db_update_${version}.zip" update="true" level="9">
+            <include name="${application.jar.name}"/>
+            <include name="${db.update.script}"/>
+            <include name="${db.update.bat}"/>
+        </zip>
+    </target>
+    
+    <target name="db-update-only" depends="db-update-script">
+        <zip basedir="${dist.dir}" destfile="${dist.dir}/db_update_${version}.zip" update="true" level="9">
+            <include name="${db.update.script}"/>
+            <include name="${db.update.bat}"/>
+        </zip>
+    </target>
+    
+    <target name="db-update-script" depends="clean">
+        <condition property="db.script.exists">
+            <available file="${db.scripts.dir}/${db.update.script}" value="true"/>
+        </condition>
+        
+        <if>
+            <equals arg1="${db.script.exists}" arg2="true" />
+            <then>
+                <copy file="${db.scripts.dir}/${db.update.script}" todir="${dist.dir}"/>
+                <replace file="${dist.dir}/${db.update.script}" token="/*@" value=""/>
+                <replace file="${dist.dir}/${db.update.script}" token="@*/" value=""/>
+                <copy file="${batch.files.dir}/${db.update.bat}" todir="${dist.dir}"/>
+                <replace file="${dist.dir}/${db.update.bat}" token="@db.update.script@" value="${db.update.script}"/>
+                <replace file="${dist.dir}/${db.update.bat}" token="@JAVA_HOME@" value="${jre.dir}"/>
+                <replace file="${dist.dir}/${db.update.bat}" token="@script.start@" value="${script.start}"/>
+            </then>
+            <else>
+                <echo message="No DB script found for version ${version}"/>
+            </else>
+        </if>
+    </target>
+    
+    <target name="zip-jre" depends="clean">
+        <!-- 
+            Zipping JRE
+        -->
+        <echo message="Zipping and copying JRE..."/>
+        <condition property="jre.zip.exists">
+            <available file="${jre.zip.file}" value="true"/>
+        </condition>
+        <if>
+            <equals arg1="${jre.zip.exists}" arg2="true" />
+            <then>
+                <zip basedir="${bin.dir}" destfile="${jre.zip.file}" update="true" level="9">
+                    <include name="${jre.dir}/**"/>
+                </zip>
+            </then>
+            <else>
+                <zip basedir="${bin.dir}" destfile="${jre.zip.file}" level="9">
+                    <include name="${jre.dir}/**"/>
+                </zip>
+            </else>
+        </if>
+        <copy todir="${dist.dir}" file="${jre.zip.file}"/>
+    </target>
+    
+    <target name="zip-libs" depends="clean">
+        <!-- 
+            Zipping libs
+        -->
+        <echo message="Zipping and copying libs..."/>
+        <condition property="lib.zip.exists">
+            <available file="${lib.zip.file}" value="true"/>
+        </condition>
+        <if>
+            <equals arg1="${lib.zip.exists}" arg2="true" />
+            <then>
+                <zip basedir="${bin.dir}" destfile="${lib.zip.file}" update="true" level="9">
+                    <include name="${lib.dir}/**"/>
+                </zip>
+            </then>
+            <else>
+                <zip basedir="${bin.dir}" destfile="${lib.zip.file}" level="9">
+                    <include name="${lib.dir}/**"/>
+                </zip>
+            </else>
+        </if>
+        <copy todir="${dist.dir}" file="${lib.zip.file}"/>
+    </target>
+    
+    <target name="create-clean-db" depends="clean">
+        <!-- 
+            Create clean DB and zip it
+        -->
+        <echo message="Creating clean DB..."/>
+        <copy file="${db.scripts.dir}/${db.run.script}" todir="${dist.dir}"/>
+        <replace file="${dist.dir}/${db.run.script}" token="@db.scripts.dir@" value="${db.scripts.dir}"/>
+        <java jar="${basedir}/bin/lib/derbyrun.jar" fork="true" failonerror="true">
+            <sysproperty key="derby.system.home" value="${dist.dir}"/>
+            <arg value="ij"/>
+            <arg value="${dist.dir}/${db.run.script}"/>
+        </java>
+        <delete file="${dist.dir}/derby.log"/>
+        <delete>
+            <fileset dir="${dist.dir}" includes="*.sql"/>
+        </delete>
+        <zip basedir="${dist.dir}" destfile="${db.zip.file}" level="9">
+            <include name="${db.name}/**"/>
+        </zip>
+        <delete includeemptydirs="true">
+            <fileset dir="${dist.dir}" includes="${db.name}/**"/>
+        </delete>
+    </target>
+        
+</project>

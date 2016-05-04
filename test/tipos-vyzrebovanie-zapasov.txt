@@ -1,0 +1,40 @@
+
+Zobraziù
+	Kolo 7		
+D·tum 	Z·pas 	KV 	PolËas 	pozn·mky 	S
+30/06 21:20 	Cruzeiro MG vs. Sao Paulo 	2:3 	1:2 	0:1 (12.) L.Fabiano, 1:1 (13.) R.Donato, 1:2 (16.) Lucas, 1:3 (50.) Jadson, 2:3 (54.) R.Donato 	
+30/06 21:20 	Nautico vs. Fluminense RJ 	0:2 	0:1 	0:1 (31.) S.Rosa, 0:2 (75.) S.Rosa 	
+30/06 23:30 	Vasco da Gama vs. Ponte Preta 	3:2 	1:2 	0:1 (16.) Roger, 1:1 (20.) Alecsandro, 1:2 (26.) Roger, 2:2 (48.) E.Luis, 3:2 (76.) D.Souza (pen) 	
+01/07 21:00 	Portuguesa SP vs. Santos 	0:0 	0:0 		
+01/07 21:00 	Coritiba AL vs. Sport Recife 	2:3 	2:1 	1:0 (12.) A.Aquino, 2:0 (24.) Tcheco, 2:1 (36.) Henrique, 2:2 (75.) M.Gabriel, 2:3 (86.) F.Azevedo 	
+01/07 21:00 	Bahia BA vs. Internacional RS 	1:1 	1:0 	1:0 (44.) Gabriel, 1:1 (62.) Indio 	
+01/07 23:30 	Flamengo RJ vs. Atletico GO 	3:2 	1:1 	0:1 (27.) Felipe, 1:1 (34.) R.Abreu, 2:1 (57.) Adryan, 3:1 (61.) R.Abreu, 3:2 (80.) Felipe 	
+01/07 23:30 	Palmeiras vs. Figueirense 	3:1 	1:1 	0:1 (30.) J.Cesar, 1:1 (37.) Roman, 2:1 (85.) Barcos, 3:1 (87.) M.Leite 	
+01/07 23:30 	Gremio RS vs. Atletico MG 	0:1 	0:1 	0:1 (26.) J.Silva 	
+12/07 00:30 	Corinthians SP vs. Botafogo RJ 	1:3 	0:1 	0:1 (28.) P.Andre (og), 0:2 (57.) Elkeson, 0:3 (69.) Elkeson, 1:3 (90.) Chicao (pen) 	
+	Kolo 8		
+D·tum 	Z·pas 	KV 	PolËas 	pozn·mky 	S
+07/07 23:30 	Botafogo RJ vs. Bahia BA 	3:0 	2:0 	1:0 (5.) Cidinho, 2:0 (45.) Cidinho, 3:0 (48.) Elkeson 	
+07/07 23:30 	Internacional RS vs. Cruzeiro MG 	2:1 	2:0 	1:0 (8.) Oscar, 2:0 (37.) L.Damiao, 2:1 (65.) Leo 	
+08/07 02:00 	Atletico GO vs. Nautico 	0:1 	0:1 	0:1 (21.) Araujo 	
+08/07 21:00 	Fluminense RJ vs. Flamengo RJ 	1:0 	1:0 	1:0 (12.) Fred 	
+08/07 21:00 	Santos vs. Gremio RS 	4:2 	2:0 	1:0 (27.) E.Dracena, 2:0 (39.) F.Anderson, 3:0 (62.) Neymar, 4:0 (70.) F.Anderson, 4:1 (78.) Vilson, 4:2 (90.) Marquinhos 	
+08/07 21:00 	Sao Paulo vs. Coritiba AL 	3:1 	2:0 	1:0 (16.) Jadson, 2:0 (41.) Maicon, 2:1 (71.) Robinho (pen), 3:1 (80.) Osvaldo 	
+08/07 21:00 	Figueirense vs. Vasco da Gama 	1:1 	0:1 	0:1 (21.) D.Souza, 1:1 (74.) Roni 	
+08/07 23:30 	Atletico MG vs. Portuguesa SP 	2:0 	1:0 	1:0 (24.) M.Rocha, 2:0 (52.) L.Silva 	
+08/07 23:30 	Ponte Preta vs. Palmeiras 	1:0 	1:0 	1:0 (16.) Ricardinho 	
+08/07 23:30 	Sport Recife vs. Corinthians SP 	1:1 	0:0 	0:1 (75.) Liedson, 1:1 (90.) M.Gabriel 	
+	Kolo 9		
+D·tum 	Z·pas 	KV 	PolËas 	pozn·mky 	S
+14/07 23:30 	Corinthians SP vs. Nautico 				
+14/07 23:30 	Figueirense vs. Atletico MG 				
+15/07 02:00 	Ponte Preta vs. Coritiba AL 				
+15/07 21:00 	Botafogo RJ vs. Fluminense RJ 				
+15/07 21:00 	Internacional RS vs. Santos 				
+15/07 21:00 	Cruzeiro MG vs. Gremio RS 				
+15/07 21:00 	Bahia BA vs. Flamengo RJ 				
+15/07 23:30 	Vasco da Gama vs. Atletico GO 				
+15/07 23:30 	Palmeiras vs. Sao Paulo 				
+15/07 23:30 	Sport Recife vs. Portuguesa SP 				
+
+	print

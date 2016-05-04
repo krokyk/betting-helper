@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.8.3
+Created-By: 1.6.0_30-b12 (Sun Microsystems Inc.)
+Class-Path: lib/antlr.jar lib/citratableeval.jar lib/commons-io.jar li
+ b/derby.jar lib/derbyclient.jar lib/derbyLocale_cs.jar lib/derbynet.j
+ ar lib/derbyrun.jar lib/derbytools.jar lib/dom4j.jar lib/foxtrot-core
+ .jar lib/gnujaxp.jar lib/hibernate-commons-annotations.jar lib/hibern
+ ate-core.jar lib/hibernate-jpa-2.0-api.jar lib/iText.jar lib/javassis
+ t.jar lib/jboss-logging.jar lib/jboss-transaction-api_1.1_spec.jar li
+ b/jcommon.jar lib/jfreechart.jar lib/junit.jar lib/log4j.jar lib/serv
+ let.jar lib/swingx-all.jar lib/swtgraphics2d.jar config/ providers/
+Main-Class: org.kroky.betting.Betting

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping package="org.kroky.betting.db.objects">
+    <class name="org.kroky.betting.db.objects.Team" table="teams" dynamic-update="true">
+        <id name="id" column="id" type="int">
+            <generator class="native"/>
+        </id>
+        <property name="name" column="name" type="string" not-null="true"/>
+        <property name="sport" column="sport" type="string" not-null="true"/>
+        <property name="country" column="country" type="string" not-null="true"/>
+        <property name="flStatus" column="fl_status" type="int" not-null="true"/>
+        <property name="resultUpdated" column="result_updated" type="timestamp" not-null="false"/>
+        <property name="nextMatchDate" column="next_match_date" type="timestamp" not-null="false"/>
+        <property name="league" column="league" type="string" not-null="true"/>
+        <many-to-one name="fixturesProvider" column="fixtures_provider" class="org.kroky.betting.db.objects.Provider"/>
+        <set name="homeMatches" inverse="true" lazy="true" cascade="save-update">
+            <key column="home_team_id"/>
+            <one-to-many class="org.kroky.betting.db.objects.Match"/>
+        </set>
+        <set name="awayMatches" inverse="true" lazy="true" cascade="save-update">
+            <key column="away_team_id"/>
+            <one-to-many class="org.kroky.betting.db.objects.Match"/>
+        </set>
+        <set name="bets" inverse="true" lazy="true" cascade="save-update">
+            <key column="active_team_id"/>
+            <one-to-many class="org.kroky.betting.db.objects.Bet"/>
+        </set>
+    </class>
+
+    <class name="org.kroky.betting.db.objects.Match" table="matches" dynamic-update="true">
+        <composite-id name="id" class="org.kroky.betting.db.objects.compositeIds.MatchId">
+            <key-property name="date" column="date" type="timestamp"/>
+            <key-many-to-one name="homeTeam" column="home_team_id" class="org.kroky.betting.db.objects.Team"/>
+            <key-many-to-one name="awayTeam" column="away_team_id" class="org.kroky.betting.db.objects.Team"/>
+        </composite-id>
+        <property name="flResult" column="fl_result" type="int" not-null="true"/>
+        <property name="homeGoals" column="home_goals" type="int"/>
+        <property name="awayGoals" column="away_goals" type="int"/>
+        <property name="updated" column="updated" type="timestamp" not-null="true"/>
+        <property name="season" column="season" type="string" not-null="true"/>
+        <property name="league" column="league" type="string" not-null="true"/>
+    </class>
+
+    <class name="org.kroky.betting.db.objects.TeamMapping" table="team_mappings" dynamic-update="true">
+        <composite-id name="id" class="org.kroky.betting.db.objects.compositeIds.TeamMappingId">
+            <key-property name="externalName" column="external_name" type="string"/>
+            <key-property name="sport" column="sport" type="string"/>
+            <key-property name="country" column="country" type="string"/>
+        </composite-id>
+        <many-to-one name="team" column="team_id" class="org.kroky.betting.db.objects.Team" not-null="true"/>
+    </class>
+
+    <class name="org.kroky.betting.db.objects.Provider" table="providers" dynamic-update="true">
+        <id name="url" column="url" type="string">
+            <generator class="assigned"/>
+        </id>
+        <property name="country" column="country" type="string" not-null="true"/>
+        <property name="sport" column="sport" type="string" not-null="true"/>
+        <property name="league" column="league" type="string" not-null="true"/>
+        <property name="season" column="season" type="string" not-null="true"/>
+        <property name="flType" column="fl_type" type="int" not-null="true"/>
+    </class>
+
+    <class name="org.kroky.betting.db.objects.Bet" table="bets" dynamic-update="true">
+        <id name="id" column="id" type="int">
+            <generator class="native"/>
+        </id>
+        <property name="matchDate" column="match_date" type="timestamp" not-null="true"/>
+        <many-to-one name="homeTeam" column="home_team_id" class="org.kroky.betting.db.objects.Team" not-null="true"/>
+        <many-to-one name="awayTeam" column="away_team_id" class="org.kroky.betting.db.objects.Team" not-null="true"/>
+        <property name="odds" column="odds" type="double" not-null="true"/>
+        <property name="betValue" column="bet_value" type="double" not-null="true"/>
+        <property name="homeTeamGoals" column="home_team_goals" type="int"/>
+        <property name="awayTeamGoals" column="away_team_goals" type="int"/>
+        <property name="flStatus" column="fl_status" type="int" not-null="true"/>
+        <many-to-one name="activeTeam" column="active_team_id" class="org.kroky.betting.db.objects.Team" not-null="true"/>
+        <property name="created" column="created" type="timestamp" not-null="true"/>
+        <property name="updated" column="updated" type="timestamp" not-null="true"/>
+    </class>
+</hibernate-mapping>
