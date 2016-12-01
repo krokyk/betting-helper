@@ -205,7 +205,7 @@ public class GraphFrame extends javax.swing.JFrame {
      *                   - the order of URLs is not important - results will be sorted by the match date
      * ALIASES           - if throughout the seasons one team changes name, add the changed name to the map with value of its previous name
      */
-    private static final int NO_DRAWS_SOCCER = 0;
+    private static final int NO_DRAWS_SOCCER = 6;
     private static final int NO_DRAWS_HOCKEY = 0;
     private static final double RATIO = 1.0;
 
@@ -216,7 +216,7 @@ public class GraphFrame extends javax.swing.JFrame {
 //            FIRST_3_BETS = new double[]{0.5, 1.0, 1.5};
 //            FIRST_3_BETS = new double[]{1.0, 2.0, 3.0};
 //            FIRST_3_BETS = new double[]{0.5, 0.5, 0.5};
-            FIRST_3_BETS = new double[]{2.0, 4.0, 6.0};
+            FIRST_3_BETS = new double[]{5.0, 10.0, 15.0};
         } else {
             FIRST_3_BETS = new double[]{0.5 * RATIO, 1.0 * RATIO, 1.5 * RATIO};
 //            FIRST_3_BETS = new double[]{1.0 * RATIO, 2.0 * RATIO, 3.0 * RATIO};
@@ -224,8 +224,15 @@ public class GraphFrame extends javax.swing.JFrame {
         }
     }
 
-    private static final boolean USE_DYNAMIC_RATIO = false;
+    private static final boolean USE_DYNAMIC_RATIO = true;
     private static final TreeMap<Double, Double> DYNAMIC_RATIO = new TreeMap<Double, Double>();
+
+    /* Conservative */
+    static {
+        DYNAMIC_RATIO.put(0.0, RATIO * 1.00);
+        DYNAMIC_RATIO.put(50.0, RATIO * 0.50);
+        DYNAMIC_RATIO.put(100.0, RATIO * 0.0);
+    }
 
     /* NOT RISKY */
 //    static {
@@ -238,16 +245,15 @@ public class GraphFrame extends javax.swing.JFrame {
 //    }
 
     /* MORE RISKY */
-    static {
-        DYNAMIC_RATIO.put(0.0, RATIO * 1.00);
-        DYNAMIC_RATIO.put(60.0, RATIO * 0.90);
-        DYNAMIC_RATIO.put(80.0, RATIO * 0.80);
-        DYNAMIC_RATIO.put(110.0, RATIO * 0.50);
-        DYNAMIC_RATIO.put(150.0, RATIO * 0.20);
-        DYNAMIC_RATIO.put(200.0, RATIO * 0.10);
-        DYNAMIC_RATIO.put(230.0, RATIO * 0.00);
-    }
-
+//    static {
+//        DYNAMIC_RATIO.put(0.0, RATIO * 1.00);
+//        DYNAMIC_RATIO.put(60.0, RATIO * 0.90);
+//        DYNAMIC_RATIO.put(80.0, RATIO * 0.80);
+//        DYNAMIC_RATIO.put(110.0, RATIO * 0.50);
+//        DYNAMIC_RATIO.put(150.0, RATIO * 0.20);
+//        DYNAMIC_RATIO.put(200.0, RATIO * 0.10);
+//        DYNAMIC_RATIO.put(230.0, RATIO * 0.00);
+//    }
     private static final boolean WHOLE_SEASON = true;
     private static final Timestamp START_DATE = Utils.stringToTimestamp("2000-07-12 00:00:00.000");
 
@@ -304,19 +310,26 @@ public class GraphFrame extends javax.swing.JFrame {
         //        {"Argentina Soccer 2011",
         //            "http://www.betexplorer.com/soccer/argentina/primera-division-2011-2012/results/?stage=zyViEZxb",
         //            "http://www.betexplorer.com/soccer/argentina/primera-division-2011-2012/results/?stage=ERTeDgh4",},
-        //        {"Morocco 2010 - 2014",
-        //            "http://www.betexplorer.com/soccer/morocco/botola-pro-2014-2015/results/",
-        //            "http://www.betexplorer.com/soccer/morocco/botola-2013-2014/results/",
-        //            "http://www.betexplorer.com/soccer/morocco/botola-2012-2013/results/",
-        //            "http://www.betexplorer.com/soccer/morocco/botola-2011-2012/results/",
-        //            "http://www.betexplorer.com/soccer/morocco/botola-2010-2011/results/",},
-        {"Algeria 2010 - 2015",
-            "http://www.betexplorer.com/soccer/algeria/division-1/results/",
-            "http://www.betexplorer.com/soccer/algeria/division-1-2014-2015/results/",
-            "http://www.betexplorer.com/soccer/algeria/division-1-2013-2014/results/",
-            "http://www.betexplorer.com/soccer/algeria/division-1-2012-2013/results/",
-            "http://www.betexplorer.com/soccer/algeria/division-1-2011-2012/results/",
-            "http://www.betexplorer.com/soccer/algeria/division-1-2010-2011/results/",},};
+        {"Morocco/Iran 2010 - 2016",
+            "http://www.betexplorer.com/soccer/morocco/botola-pro-2014-2015/results/",
+            "http://www.betexplorer.com/soccer/morocco/botola-2013-2014/results/",
+            "http://www.betexplorer.com/soccer/morocco/botola-2012-2013/results/",
+            "http://www.betexplorer.com/soccer/morocco/botola-2011-2012/results/",
+            "http://www.betexplorer.com/soccer/morocco/botola-2010-2011/results/",
+            "http://www.betexplorer.com/soccer/morocco/botola-pro/results/",
+            "http://www.betexplorer.com/soccer/iran/pro-league-2010-2011/results/",
+            "http://www.betexplorer.com/soccer/iran/pro-league-2011-2012/results/",
+            "http://www.betexplorer.com/soccer/iran/pro-league-2012-2013/results/",
+            "http://www.betexplorer.com/soccer/iran/pro-league-2013-2014/results/",
+            "http://www.betexplorer.com/soccer/iran/persian-gulf-pro-league-2014-2015/results/",
+            "http://www.betexplorer.com/soccer/iran/persian-gulf-pro-league/results/",}, //        {"Algeria 2010 - 2015",
+    //            "http://www.betexplorer.com/soccer/algeria/division-1/results/",
+    //            "http://www.betexplorer.com/soccer/algeria/division-1-2014-2015/results/",
+    //            "http://www.betexplorer.com/soccer/algeria/division-1-2013-2014/results/",
+    //            "http://www.betexplorer.com/soccer/algeria/division-1-2012-2013/results/",
+    //            "http://www.betexplorer.com/soccer/algeria/division-1-2011-2012/results/",
+    //            "http://www.betexplorer.com/soccer/algeria/division-1-2010-2011/results/",},
+    };
 
     //<editor-fold defaultstate="collapsed" desc="---<<< MAIN METHOD >>>---">
     public static void main(String args[]) {

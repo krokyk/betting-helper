@@ -1,6 +1,6 @@
 ----------------------------------------------------------------
-Wed May 04 13:49:54 CEST 2016:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.8.2.2 - (1181258): instance a816c00e-0154-7b9a-5c7c-00000e008810 
+Thu Dec 01 23:50:25 CET 2016:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.8.2.2 - (1181258): instance a816c00e-0158-bc94-e7a9-00000e00b450 
 on database directory C:\NetBeansProjects\betting-helper\BettingDB  with class loader sun.misc.Launcher$AppClassLoader@5451c3a8 
 Loaded from file:/C:/NetBeansProjects/betting-helper/bin/lib/derby.jar
 java.vendor=Oracle Corporation
@@ -9,8 +9,8 @@ user.dir=C:\NetBeansProjects\betting-helper
 derby.system.home=null
 Database Class Loader started - derby.database.classpath=''
 ----------------------------------------------------------------
-Wed May 04 13:51:24 CEST 2016: Shutting down Derby engine
+Fri Dec 02 00:48:30 CET 2016: Shutting down Derby engine
 ----------------------------------------------------------------
-Wed May 04 13:51:24 CEST 2016:
-Shutting down instance a816c00e-0154-7b9a-5c7c-00000e008810 on database directory C:\NetBeansProjects\betting-helper\BettingDB with class loader sun.misc.Launcher$AppClassLoader@5451c3a8 
+Fri Dec 02 00:48:30 CET 2016:
+Shutting down instance a816c00e-0158-bc94-e7a9-00000e00b450 on database directory C:\NetBeansProjects\betting-helper\BettingDB with class loader sun.misc.Launcher$AppClassLoader@5451c3a8 
 ----------------------------------------------------------------

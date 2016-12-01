@@ -50,13 +50,14 @@ public class BetExplorerFixturesHTMLParser extends AbstractParser {
      <tr class="rtitle"><th class="left first-cell nobr" colspan="2">21. Round</th><th class="tv">&nbsp;</th><th class="bs">B's</th><th>1</th><th>X</th><th class="last-cell nobr">2</th></tr>
      <tr class="match-line first-row"><td class="first-cell date tl">23.08.2015 22:00</td><td class="tl nobr"><a href="/soccer/argentina/primera-division/argentinos-jrs-san-lorenzo/WbB4vU7i/">Argentinos Jrs - San Lorenzo</a></td><td class="tv">&nbsp;</td><td class="bs">&nbsp;</td><td class="odds">&nbsp;</td><td class="odds">&nbsp;</td><td class="odds nobr last-cell">&nbsp;</td></tr>
      */
-    private static final Pattern PATTERN = Pattern.compile(".*first-cell[^>]+>([^<]+).*<a[^>]+>(.*)(\\s+-\\s+)([^<]+)");
+    private static final Pattern PATTERN_DATE = Pattern.compile("class=\"table-main__datetime\">(\\d\\d\\.\\d\\d\\.\\d\\d\\d\\d \\d\\d:\\d\\d)</td>");
+    private static final Pattern PATTERN_TEAMS = Pattern.compile("<a href=\"[^\"]*\" class=\"in-match\"><span>([^<]+)<[^<]+<span>([^<]+)<");
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy HH:mm");
 
     public BetExplorerFixturesHTMLParser() {
         super("www.betexplorer.com Next Match (HTML)");
-        LOG.debug("Using pattern: " + PATTERN.pattern());
+        LOG.debug("Using patterns: " + PATTERN_DATE.pattern() + " and " + PATTERN_TEAMS.pattern());
     }
 
     @Override
@@ -68,31 +69,32 @@ public class BetExplorerFixturesHTMLParser extends AbstractParser {
         int skipped = 0;
         int duplicates = 0;
         int lineCount = 0;
-        Timestamp previousDate = null;
         try {
             String line;
             Provider currentProvider = null;
+            String dateStr = null;
             while ((line = br.readLine()) != null) {
                 lineCount++;
                 setProgressBarValue(lineCount);
-                Matcher matcher = PATTERN.matcher(line);
+                Matcher matcher = PATTERN_DATE.matcher(line);
                 Provider newProvider = getProvider(line);
                 if (newProvider != null) {
                     currentProvider = newProvider;
                 }
                 if (matcher.find()) {
-                    String dateStr = matcher.group(1).trim();
-                    String homeTeamName = matcher.group(2).trim();
-                    String awayTeamName = matcher.group(4).trim();
+                    dateStr = matcher.group(1).trim();
+                    continue;
+                }
+                matcher = PATTERN_TEAMS.matcher(line);
+                if (matcher.find()) {
+                    String homeTeamName = matcher.group(1).trim();
+                    String awayTeamName = matcher.group(2).trim();
                     Timestamp date;
                     try {
                         date = new Timestamp(DATE_FORMAT.parse(dateStr).getTime());
-                        previousDate = date;
                     } catch (ParseException ex) {
-                        if (previousDate == null) {
-                            throw new Exception("Could not parse date: \"" + dateStr + "\" using formatter " + DATE_FORMAT.toPattern() + " and no previous date exist to be used instead. Current parsed line: " + line, ex);
-                        }
-                        date = previousDate;
+                        throw new Exception("Could not parse date: \"" + dateStr + "\" using formatter " + DATE_FORMAT.toPattern() + " and no previous date exist to be used instead. Current parsed line: " + line, ex);
+
                     }
                     String country = null;
                     String sport = null;
@@ -139,6 +141,6 @@ public class BetExplorerFixturesHTMLParser extends AbstractParser {
 
     @Override
     public Pattern getPattern() {
-        return PATTERN;
+        return PATTERN_DATE;
     }
 }

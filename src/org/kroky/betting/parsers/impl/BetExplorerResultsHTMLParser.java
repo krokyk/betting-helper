@@ -28,11 +28,11 @@ public class BetExplorerResultsHTMLParser extends AbstractParser {
     private static final Logger LOG = org.apache.log4j.Logger.getLogger(BetExplorerResultsHTMLParser.class);
 
     //<tr class="first-row"><td class="first-cell tl"><a href="matchdetails.php?matchid=fu02wHIO" onclick="win(this.href, 560, 500, 0, 1); return false;">All Boys - Boca Juniors</a></td><td class="result"><a href="matchdetails.php?matchid=fu02wHIO" onclick="win(this.href, 560, 500, 0, 1); return false;">3:1</a></td><td class="odds best-betrate" data-odd="3.43"></td><td class="odds" data-odd="3.16"></td><td class="odds" data-odd="2.08"></td><td class="last-cell nobr date">24.06.2012</td></tr>
-    private static final Pattern PATTERN = Pattern.compile("<a\\s+href\\s*=\\s*\"[\\./]*matchdetails\\.php[^>]+>(.+)\\s+-\\s+([^<]+)<.*<a\\s+href\\s*=\\s*\"[\\./]*matchdetails\\.php[^>]+>([^<]+).*class=\"odds.*class=\"odds([^>]+).*class=\"odds.*(\\d\\d\\.\\d\\d\\.\\d\\d\\d\\d)");
+    private static final Pattern PATTERN = Pattern.compile("class=\"in-match\"><span>([^<]+)<[^<]+<span>([^<]+)</span></a></td><td class=\"h-text-center\"><a[^>]+>([^<]+)</a>.+(\\d\\d\\.\\d\\d\\.\\d\\d\\d\\d)</td></tr>");
     //<a\s+href\s*=\s*"[\./]*matchdetails\.php[^>]+>(.+)\s+-\s+([^<]+)<.*<a\s+href\s*=\s*"[\./]*matchdetails\.php[^>]+>([^<]+).*class="odds.*class="odds([^>]+).*class="odds.*(\d\d\.\d\d\.\d\d\d\d)
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");
 
-    private static final Pattern ODDS_EXTRACT_PATTERN = Pattern.compile("(\\d+\\.\\d+)");
+    private static final Pattern ODDS_EXTRACT_PATTERN = Pattern.compile("data-odd=\"\\d+.\\d+\".+data-odd=\"(\\d+.\\d+)\".+data-odd=\"\\d+.\\d+\".+(\\d+\\.\\d+)");
 
     public BetExplorerResultsHTMLParser() {
         super("www.betexplorer.com results (HTML)");
@@ -76,21 +76,7 @@ public class BetExplorerResultsHTMLParser extends AbstractParser {
                         }
                     }
 
-                    //" data-odd="3.20"
-                    //or just "
-                    String attrOdds = matcher.group(4);
-                    Matcher m = ODDS_EXTRACT_PATTERN.matcher(attrOdds);
-                    String oddsStr;
-                    if (m.find()) {
-                        oddsStr = m.group(1);
-                    } else {
-                        oddsStr = "0.0";
-                    }
-
-                    double odds = Double.parseDouble(oddsStr);
-                    odds = odds == 0.0 ? 3.0 : odds;
-
-                    String dateStr = matcher.group(5).trim();
+                    String dateStr = matcher.group(4).trim();
                     Timestamp date;
                     try {
                         date = new Timestamp(DATE_FORMAT.parse(dateStr).getTime());
@@ -107,6 +93,16 @@ public class BetExplorerResultsHTMLParser extends AbstractParser {
                         league = currentProvider.getLeague();
                         season = currentProvider.getSeason();
                     }
+
+                    Matcher m = ODDS_EXTRACT_PATTERN.matcher(line);
+                    double odds;
+                    if (m.find()) {
+                        String oddsStr = m.group(1);
+                        odds = Double.parseDouble(oddsStr);
+                    } else {
+                        odds = 3.0;
+                    }
+
                     ParseResult result = new ParseResultImpl(date, homeTeamName, awayTeamName, goals1, goals2, country, sport, league, season);
                     result.setOdds(odds);
                     boolean change = results.add(result);
