@@ -112,9 +112,9 @@ public class ParseResultsDialog extends EscapableDialog {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(progressBarUpdate, javax.swing.GroupLayout.DEFAULT_SIZE, 552, Short.MAX_VALUE)
+                        .addComponent(progressBarUpdate, javax.swing.GroupLayout.DEFAULT_SIZE, 536, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(buttonUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(buttonUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(buttonCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
@@ -128,13 +128,11 @@ public class ParseResultsDialog extends EscapableDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(labelDraws))
+                        .addComponent(labelDraws)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(scrollPaneMatchesTable))
                 .addContainerGap())
         );
-
-        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {buttonCancel, buttonUpdate});
-
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
@@ -368,7 +366,7 @@ public class ParseResultsDialog extends EscapableDialog {
         private boolean updateBet(Bet bet, List<Match> matches) {
             for (Match m : matches) {
                 Timestamp dayPrecisionDate = Utils.getTimestampAtDayPrecision(bet.getMatchDate());
-                if (dayPrecisionDate.equals(m.getDate())
+                if (dayPrecisionDate.equals(Utils.getTimestampAtDayPrecision(m.getDate()))
                         && bet.getHomeTeam().equals(m.getHomeTeam())
                         && bet.getAwayTeam().equals(m.getAwayTeam())) {
                     bet.setHomeTeamGoals(m.getHomeGoals());
