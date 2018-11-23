@@ -28,9 +28,10 @@ public class BetExplorerResultsHTMLParser extends AbstractParser {
     private static final Logger LOG = org.apache.log4j.Logger.getLogger(BetExplorerResultsHTMLParser.class);
 
     //<tr class="first-row"><td class="first-cell tl"><a href="matchdetails.php?matchid=fu02wHIO" onclick="win(this.href, 560, 500, 0, 1); return false;">All Boys - Boca Juniors</a></td><td class="result"><a href="matchdetails.php?matchid=fu02wHIO" onclick="win(this.href, 560, 500, 0, 1); return false;">3:1</a></td><td class="odds best-betrate" data-odd="3.43"></td><td class="odds" data-odd="3.16"></td><td class="odds" data-odd="2.08"></td><td class="last-cell nobr date">24.06.2012</td></tr>
-    private static final Pattern PATTERN = Pattern.compile("class=\"in-match\"><span>(<strong>)?([^<]+)(</strong>)?<[^<]+<span>(<strong>)?([^<]+)(</strong>)?</span></a></td><td class=\"h-text-center\"><a[^>]+>([^<]+)</a>.+(\\d\\d\\.\\d\\d\\.\\d\\d\\d\\d)</td></tr>");
+    private static final Pattern PATTERN = Pattern.compile("class=\"in-match\"><span>(<strong>)?([^<]+)(</strong>)?<[^<]+<span>(<strong>)?([^<]+)(</strong>)?</span></a></td><td class=\"h-text-center\"><a[^>]+>([^<]+)</a>.+(\\d\\d\\.\\d\\d\\.\\d*)</td></tr>");
     //<a\s+href\s*=\s*"[\./]*matchdetails\.php[^>]+>(.+)\s+-\s+([^<]+)<.*<a\s+href\s*=\s*"[\./]*matchdetails\.php[^>]+>([^<]+).*class="odds.*class="odds([^>]+).*class="odds.*(\d\d\.\d\d\.\d\d\d\d)
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");
+    private static final SimpleDateFormat DATE_FORMAT_WITHOUT_YEAR = new SimpleDateFormat("dd.MM.");
 
     private static final Pattern ODDS_EXTRACT_PATTERN = Pattern.compile("data-odd=\"\\d+.\\d+\".+data-odd=\"(\\d+.\\d+)\".+data-odd=\"\\d+.\\d+\".+(\\d+\\.\\d+)");
 
@@ -81,7 +82,11 @@ public class BetExplorerResultsHTMLParser extends AbstractParser {
                     try {
                         date = new Timestamp(DATE_FORMAT.parse(dateStr).getTime());
                     } catch (ParseException ex) {
-                        throw new Exception("Could not parse date: \"" + dateStr + "\" using formatter: " + DATE_FORMAT.toPattern(), ex);
+                        try {
+                            date = new Timestamp(DATE_FORMAT_WITHOUT_YEAR.parse(dateStr).getTime());
+                        } catch (ParseException ex2) {
+                            throw new Exception("Could not parse date: \"" + dateStr + "\" using formatters: " + DATE_FORMAT.toPattern() + " or " + DATE_FORMAT_WITHOUT_YEAR.toPattern(), ex2);
+                        }
                     }
                     String country = null;
                     String sport = null;

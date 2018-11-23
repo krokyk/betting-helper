@@ -50,7 +50,8 @@ public class BetExplorerFixturesHTMLParser extends AbstractParser {
      <tr class="rtitle"><th class="left first-cell nobr" colspan="2">21. Round</th><th class="tv">&nbsp;</th><th class="bs">B's</th><th>1</th><th>X</th><th class="last-cell nobr">2</th></tr>
      <tr class="match-line first-row"><td class="first-cell date tl">23.08.2015 22:00</td><td class="tl nobr"><a href="/soccer/argentina/primera-division/argentinos-jrs-san-lorenzo/WbB4vU7i/">Argentinos Jrs - San Lorenzo</a></td><td class="tv">&nbsp;</td><td class="bs">&nbsp;</td><td class="odds">&nbsp;</td><td class="odds">&nbsp;</td><td class="odds nobr last-cell">&nbsp;</td></tr>
      */
-    private static final Pattern PATTERN_DATE = Pattern.compile("class=\"table-main__datetime\">(\\d\\d\\.\\d\\d\\.\\d\\d\\d\\d \\d\\d:\\d\\d)</td>");
+    private static final Pattern PATTERN_DATE = Pattern.compile("class=\"table-main__datetime\">(\\d\\d\\.\\d\\d\\.\\d*|Today|Tomorrow) (\\d\\d:\\d\\d)</td>");
+    //private static final Pattern PATTERN_DATE = Pattern.compile("class=\"table-main__datetime\">(\\d\\d\\.\\d\\d\\.\\d* \\d\\d:\\d\\d)</td>");
     private static final Pattern PATTERN_TEAMS = Pattern.compile("<a href=\"[^\"]*\" class=\"in-match\"><span>([^<]+)<[^<]+<span>([^<]+)<");
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy HH:mm");
