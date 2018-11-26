@@ -9,11 +9,13 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
+import org.kroky.betting.common.util.Utils;
 import org.kroky.betting.db.objects.Provider;
 import org.kroky.betting.parsers.AbstractParser;
 import org.kroky.betting.parsers.ParseResult;
@@ -28,7 +30,7 @@ public class BetExplorerResultsHTMLParser extends AbstractParser {
     private static final Logger LOG = org.apache.log4j.Logger.getLogger(BetExplorerResultsHTMLParser.class);
 
     //<tr class="first-row"><td class="first-cell tl"><a href="matchdetails.php?matchid=fu02wHIO" onclick="win(this.href, 560, 500, 0, 1); return false;">All Boys - Boca Juniors</a></td><td class="result"><a href="matchdetails.php?matchid=fu02wHIO" onclick="win(this.href, 560, 500, 0, 1); return false;">3:1</a></td><td class="odds best-betrate" data-odd="3.43"></td><td class="odds" data-odd="3.16"></td><td class="odds" data-odd="2.08"></td><td class="last-cell nobr date">24.06.2012</td></tr>
-    private static final Pattern PATTERN = Pattern.compile("class=\"in-match\"><span>(<strong>)?([^<]+)(</strong>)?<[^<]+<span>(<strong>)?([^<]+)(</strong>)?</span></a></td><td class=\"h-text-center\"><a[^>]+>([^<]+)</a>.+(\\d\\d\\.\\d\\d\\.\\d*)</td></tr>");
+    private static final Pattern PATTERN = Pattern.compile("class=\"in-match\"><span>(<strong>)?([^<]+)(</strong>)?<[^<]+<span>(<strong>)?([^<]+)(</strong>)?</span></a></td><td class=\"h-text-center\"><a[^>]+>([^<]+)</a>.+(\\d\\d\\.\\d\\d\\.\\d*|Today|Yesterday)</td></tr>");
     //<a\s+href\s*=\s*"[\./]*matchdetails\.php[^>]+>(.+)\s+-\s+([^<]+)<.*<a\s+href\s*=\s*"[\./]*matchdetails\.php[^>]+>([^<]+).*class="odds.*class="odds([^>]+).*class="odds.*(\d\d\.\d\d\.\d\d\d\d)
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");
     private static final SimpleDateFormat DATE_FORMAT_WITHOUT_YEAR = new SimpleDateFormat("dd.MM.");
@@ -78,6 +80,17 @@ public class BetExplorerResultsHTMLParser extends AbstractParser {
                     }
 
                     String dateStr = matcher.group(8).trim();
+                    Calendar cal = Calendar.getInstance();
+                    if ("Today".equals(dateStr)) {
+                        dateStr = Utils.format(cal.getTime(), DATE_FORMAT);
+                    } else if ("Yesterday".equals(dateStr)) {
+                        cal.add(Calendar.DAY_OF_MONTH, -1);
+                        dateStr = Utils.format(cal.getTime(), DATE_FORMAT);
+                    } else if (dateStr.length() < 7) { //i.e. without year
+                        dateStr = dateStr + cal.get(Calendar.YEAR);
+                    } else {
+                        //there is a full dd.MM.yyyy format found
+                    }
                     Timestamp date;
                     try {
                         date = new Timestamp(DATE_FORMAT.parse(dateStr).getTime());

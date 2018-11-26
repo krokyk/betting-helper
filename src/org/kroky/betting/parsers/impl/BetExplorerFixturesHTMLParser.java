@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
@@ -51,10 +52,10 @@ public class BetExplorerFixturesHTMLParser extends AbstractParser {
      <tr class="match-line first-row"><td class="first-cell date tl">23.08.2015 22:00</td><td class="tl nobr"><a href="/soccer/argentina/primera-division/argentinos-jrs-san-lorenzo/WbB4vU7i/">Argentinos Jrs - San Lorenzo</a></td><td class="tv">&nbsp;</td><td class="bs">&nbsp;</td><td class="odds">&nbsp;</td><td class="odds">&nbsp;</td><td class="odds nobr last-cell">&nbsp;</td></tr>
      */
     private static final Pattern PATTERN_DATE = Pattern.compile("class=\"table-main__datetime\">(\\d\\d\\.\\d\\d\\.\\d*|Today|Tomorrow) (\\d\\d:\\d\\d)</td>");
-    //private static final Pattern PATTERN_DATE = Pattern.compile("class=\"table-main__datetime\">(\\d\\d\\.\\d\\d\\.\\d* \\d\\d:\\d\\d)</td>");
     private static final Pattern PATTERN_TEAMS = Pattern.compile("<a href=\"[^\"]*\" class=\"in-match\"><span>([^<]+)<[^<]+<span>([^<]+)<");
 
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+    private static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");
 
     public BetExplorerFixturesHTMLParser() {
         super("www.betexplorer.com Next Match (HTML)");
@@ -66,14 +67,14 @@ public class BetExplorerFixturesHTMLParser extends AbstractParser {
         String message = "Parsing started";
         LOG.info(message);
         BufferedReader br = createBufferedReader(text);
-        Set<ParseResult> results = new TreeSet<ParseResult>();
+        Set<ParseResult> results = new TreeSet<>();
         int skipped = 0;
         int duplicates = 0;
         int lineCount = 0;
         try {
             String line;
             Provider currentProvider = null;
-            String dateStr = null;
+            Timestamp date = Utils.now();
             while ((line = br.readLine()) != null) {
                 lineCount++;
                 setProgressBarValue(lineCount);
@@ -83,20 +84,31 @@ public class BetExplorerFixturesHTMLParser extends AbstractParser {
                     currentProvider = newProvider;
                 }
                 if (matcher.find()) {
-                    dateStr = matcher.group(1).trim();
+                    String dateStr = matcher.group(1).trim();
+                    String timeStr = matcher.group(2).trim();
+                    Calendar cal = Calendar.getInstance();
+                    if ("Today".equals(dateStr)) {
+                        dateStr = Utils.format(cal.getTime(), DATE_FORMAT);
+                    } else if ("Tomorrow".equals(dateStr)) {
+                        cal.add(Calendar.DAY_OF_MONTH, 1);
+                        dateStr = Utils.format(cal.getTime(), DATE_FORMAT);
+                    } else if (dateStr.length() < 7) { //i.e. without year
+                        dateStr = dateStr + cal.get(Calendar.YEAR);
+                    } else {
+                        //there is a full dd.MM.yyyy format found
+                    }
+                    try {
+                        date = new Timestamp(DATE_TIME_FORMAT.parse(dateStr + " " + timeStr).getTime());
+                    } catch (ParseException ex) {
+                        throw new Exception("Could not parse date: \"" + dateStr + "\" using formatter " + DATE_TIME_FORMAT.toPattern() + " and no previous date exist to be used instead. Current parsed line: " + line, ex);
+                    }
                     continue;
                 }
                 matcher = PATTERN_TEAMS.matcher(line);
                 if (matcher.find()) {
                     String homeTeamName = matcher.group(1).trim();
                     String awayTeamName = matcher.group(2).trim();
-                    Timestamp date;
-                    try {
-                        date = new Timestamp(DATE_FORMAT.parse(dateStr).getTime());
-                    } catch (ParseException ex) {
-                        throw new Exception("Could not parse date: \"" + dateStr + "\" using formatter " + DATE_FORMAT.toPattern() + " and no previous date exist to be used instead. Current parsed line: " + line, ex);
-
-                    }
+                    
                     String country = null;
                     String sport = null;
                     String league = null;

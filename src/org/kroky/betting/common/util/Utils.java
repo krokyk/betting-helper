@@ -47,6 +47,10 @@ public class Utils {
     public static String formatDate(Object date) {
         return DATE_FORMAT.format(date);
     }
+    
+    public static String format(Object date, SimpleDateFormat sdf) {
+        return sdf.format(date);
+    }
 
     public static Timestamp stringToTimestamp(String dateStr) {
         try {
